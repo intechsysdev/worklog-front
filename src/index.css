@@ -1,0 +1,333 @@
+@import 'tailwindcss';
+
+/* El tema lo decide data-theme en <html> (lo fija index.html antes del primer pintado). */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+@layer theme {
+  :root {
+    /* ── Marca INTECHSYS ONE (especificación §6) ────────────────────────────── */
+    --brand-primary: #af1839;
+    --brand-deep: #751326;
+    --brand-red: #e51e49;
+    --brand-amber: #da830b;
+    --brand-gold: #f8b21d;
+    --brand-green: #1e6b3f;
+
+    /* ── Superficies ─────────────────────────────────────────────────────────
+       #F5F5F4 es el fondo de la app; las tarjetas y el sidebar van en blanco. */
+    --surface-canvas: #f5f5f4;
+    --surface-raised: #ffffff;
+    --surface-overlay: #ffffff;
+    --surface-inset: #f5f5f4;
+    --surface-segmented: #e8e8e7;
+    --surface-selected: #fbf7f8;
+
+    --border-subtle: #e2e2e1;
+    --border-strong: #c9c9c8;
+    --border-divider: #efefee;
+
+    --text-primary: #1e1f1d;
+    --text-secondary: #3c3c3b;
+    --text-muted: #5a5958;
+    --text-subtle: #868787;
+
+    /* --accent: texto, íconos e indicadores. --accent-solid: fondo del botón primario. */
+    --accent: #af1839;
+    --accent-solid: #af1839;
+    --accent-hover: #751326;
+    --accent-soft: #fbe9ee;
+    --accent-ink: #751326;
+    --accent-contrast: #ffffff;
+    --wordmark: #e51e49;
+
+    --positive: #1e6b3f;
+    --positive-soft: #e6f4ec;
+    --positive-dot: #1e7a46;
+    --caution: #8a4105;
+    --caution-strong: #6e3504;
+    --caution-soft: #fef3da;
+    --caution-dot: #da830b;
+    --critical: #751326;
+    --critical-soft: #fbe9ee;
+    --neutral-soft: #e8e8e7;
+    --neutral-dot: #5a5958;
+
+    --overlay-backdrop: rgb(30 31 29 / 0.55);
+    --ring: #af1839;
+    --shadow-color: 30 6% 15%;
+
+    color-scheme: light;
+  }
+
+  :root[data-theme='dark'] {
+    --surface-canvas: #181817;
+    --surface-raised: #222220;
+    --surface-overlay: #2a2a28;
+    --surface-inset: #1c1c1b;
+    --surface-segmented: #2e2e2c;
+    --surface-selected: #2b1a1e;
+
+    --border-subtle: #353533;
+    --border-strong: #4d4c4a;
+    --border-divider: #2c2c2a;
+
+    --text-primary: #f3f2ef;
+    --text-secondary: #d2d0cc;
+    --text-muted: #a3a19d;
+    --text-subtle: #85837f;
+
+    /* Sobre gris profundo el rojo de marca no llega a 4,5:1 como texto: se aclara. */
+    --accent: #ff6b8b;
+    --accent-solid: #af1839;
+    --accent-hover: #c41d43;
+    --accent-soft: #3a1620;
+    --accent-ink: #ff9fb4;
+    --accent-contrast: #ffffff;
+    --wordmark: #ff4f74;
+
+    --positive: #7fd6a2;
+    --positive-soft: #173a26;
+    --positive-dot: #4cc27d;
+    --caution: #f8c45a;
+    --caution-strong: #fbd383;
+    --caution-soft: #3a2b0e;
+    --caution-dot: #f0a12c;
+    --critical: #ff7c97;
+    --critical-soft: #3d1520;
+    --neutral-soft: #2e2e2c;
+    --neutral-dot: #a3a19d;
+
+    --overlay-backdrop: rgb(0 0 0 / 0.6);
+    --ring: #ff6b8b;
+    --shadow-color: 0 0% 0%;
+
+    color-scheme: dark;
+  }
+}
+
+@theme inline {
+  --color-canvas: var(--surface-canvas);
+  --color-raised: var(--surface-raised);
+  --color-overlay: var(--surface-overlay);
+  --color-inset: var(--surface-inset);
+  --color-segmented: var(--surface-segmented);
+  --color-selected: var(--surface-selected);
+
+  --color-line: var(--border-subtle);
+  --color-line-strong: var(--border-strong);
+  --color-divider: var(--border-divider);
+
+  --color-ink: var(--text-primary);
+  --color-ink-soft: var(--text-secondary);
+  --color-ink-muted: var(--text-muted);
+  --color-ink-subtle: var(--text-subtle);
+
+  --color-accent: var(--accent);
+  --color-accent-solid: var(--accent-solid);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-contrast: var(--accent-contrast);
+  --color-wordmark: var(--wordmark);
+
+  --color-positive: var(--positive);
+  --color-positive-soft: var(--positive-soft);
+  --color-positive-dot: var(--positive-dot);
+  --color-caution: var(--caution);
+  --color-caution-strong: var(--caution-strong);
+  --color-caution-soft: var(--caution-soft);
+  --color-caution-dot: var(--caution-dot);
+  --color-critical: var(--critical);
+  --color-critical-soft: var(--critical-soft);
+  --color-neutral-soft: var(--neutral-soft);
+  --color-neutral-dot: var(--neutral-dot);
+
+  --radius-control: 10px;
+  --radius-box: 12px;
+  --radius-kpi: 14px;
+  --radius-card: 16px;
+
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --shadow-soft: 0 1px 2px hsl(var(--shadow-color) / 0.05);
+  --shadow-float: 0 4px 8px hsl(var(--shadow-color) / 0.08), 0 24px 64px -12px hsl(var(--shadow-color) / 0.28);
+}
+
+@layer base {
+  * {
+    border-color: var(--border-subtle);
+  }
+
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background-color: var(--surface-canvas);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-optical-sizing: auto;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: var(--accent-soft);
+    color: var(--text-primary);
+  }
+
+  /* Foco visible: contorno de 2 px en el primario (§6). */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--border-strong);
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background-clip: content-box;
+  }
+
+  input,
+  textarea,
+  select,
+  button {
+    font: inherit;
+    color: inherit;
+  }
+
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']) {
+    cursor: pointer;
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer components {
+  /* Logos alternados por tema, sin parpadeo. */
+  .marca-oscura {
+    display: none;
+  }
+
+  :root[data-theme='dark'] .marca-clara {
+    display: none;
+  }
+
+  :root[data-theme='dark'] .marca-oscura {
+    display: block;
+  }
+
+  .surface-card {
+    background-color: var(--surface-raised);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-card);
+  }
+
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      var(--surface-segmented) 25%,
+      var(--border-divider) 50%,
+      var(--surface-segmented) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.4s ease-in-out infinite;
+  }
+
+  /* Etiqueta de sección: 11 px, mayúsculas, 0.1em (§6). */
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  /* Tablas responsivas: en ≤640 px cada fila pasa a tarjeta de 2 columnas con data-label. */
+  @media (max-width: 640px) {
+    .rtable thead {
+      display: none;
+    }
+
+    .rtable,
+    .rtable tbody {
+      display: block;
+      /* El ancho mínimo de escritorio (inline) no aplica a las tarjetas. */
+      min-width: 0 !important;
+    }
+
+    .rtable tr {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      column-gap: 12px;
+      padding: 10px 16px;
+    }
+
+    .rtable td {
+      display: block;
+      padding: 6px 0 !important;
+      text-align: left !important;
+      min-width: 0;
+    }
+
+    .rtable td:first-child,
+    .rtable td[data-wide] {
+      grid-column: 1 / -1;
+    }
+
+    .rtable td[data-label]::before {
+      content: attr(data-label);
+      display: block;
+      margin-bottom: 2px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+  }
+
+  /* MapLibre: los controles siguen el tema. */
+  .maplibregl-ctrl-group {
+    border-radius: 10px !important;
+  }
+
+  :root[data-theme='dark'] .maplibregl-ctrl-group {
+    background: var(--surface-overlay);
+  }
+
+  :root[data-theme='dark'] .maplibregl-ctrl-group button .maplibregl-ctrl-icon {
+    filter: invert(1);
+  }
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,29 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Dependencias y compilación
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Caché de herramientas
+.vite/
+*.tsbuildinfo
+
+# Entorno: solo viajan los archivos sin secretos
+.env
+.env.*
+!.env.example
+!.env.development
+!.env.production
+
+# Editores
+.vscode/*
+!.vscode/extensions.json
+.vs/
+.idea
+.DS_Store
+Thumbs.db
