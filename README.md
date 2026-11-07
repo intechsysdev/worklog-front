@@ -125,7 +125,7 @@ Los menús y las acciones se ocultan según los permisos de `GET /api/v1/me`.
 
 ## Despliegue
 
-`.github/workflows/azure-static-web-apps.yml` sigue el patrón de one-front: lint y build en Actions y
-subida de `dist/` con `skip_app_build`. Necesita el secreto `AZURE_STATIC_WEB_APPS_API_TOKEN_WORKLOG`;
-las URLs salen de `.env.production`, que viaja al repositorio. `public/staticwebapp.config.json` resuelve las rutas del SPA
+`.github/workflows/azure-static-web-apps-victorious-sky-09f9b8c10.yml` es el workflow conectado desde Azure:
+Static Web Apps compila con Oryx (Node según `engines` de `package.json`) y publica `dist/`. Usa el secreto
+`AZURE_STATIC_WEB_APPS_API_TOKEN_VICTORIOUS_SKY_09F9B8C10`; las URLs salen de `.env.production`, que viaja al repositorio. `public/staticwebapp.config.json` resuelve las rutas del SPA
 (incluida `/sso/callback`).
