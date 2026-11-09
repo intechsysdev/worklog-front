@@ -1,11 +1,49 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from '@/lib/api'
-import type { DeviceControlSettings, DeviceRow, SaveDeviceControlCommand, Verification } from '@/lib/types'
+import type { DeviceControlSettings, DeviceRow, OneLink, SaveDeviceControlCommand, SaveOneLinkCommand, Verification } from '@/lib/types'
 
 const deviceKeys = {
   settings: ['device-control', 'settings'] as const,
   apps: ['device-control', 'apps'] as const,
   devices: (unassigned: boolean) => ['device-control', 'devices', unassigned] as const,
+  oneLink: ['integrations', 'one'] as const,
+}
+
+/** Vínculo con INTECHSYS ONE: la credencial con que WorkLog lee la consola de MobiControl de la empresa. */
+export function useOneLink() {
+  return useQuery({ queryKey: deviceKeys.oneLink, queryFn: () => api.get<OneLink>('/integrations/one') })
+}
+
+/** Vuelve a preguntarle a ONE, sin la caché del servidor. */
+export function useCheckOneLink() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: () => api.post<OneLink>('/integrations/one/check'),
+    onSuccess: (link) => client.setQueryData(deviceKeys.oneLink, link),
+  })
+}
+
+/** Al cambiar el vínculo cambia de dónde salen los equipos: se recargan con el estado nuevo. */
+export function useSaveOneLink() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (command: SaveOneLinkCommand) => api.put<OneLink>('/integrations/one', command),
+    onSuccess: (link) => {
+      client.setQueryData(deviceKeys.oneLink, link)
+      void client.invalidateQueries({ queryKey: ['device-control'] })
+    },
+  })
+}
+
+export function useRemoveOneLink() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: () => api.delete('/integrations/one'),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: deviceKeys.oneLink })
+      void client.invalidateQueries({ queryKey: ['device-control'] })
+    },
+  })
 }
 
 export function useDeviceSettings() {
@@ -20,7 +58,7 @@ export function useSaveDeviceSettings() {
   })
 }
 
-/** Corre las 5 comprobaciones contra MobiControl. */
+/** Comprueba el vínculo con ONE, la conexión con la consola y las órdenes de jornada. */
 export function useVerifyDeviceControl() {
   const client = useQueryClient()
   return useMutation({

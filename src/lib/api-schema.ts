@@ -3633,7 +3633,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Verifica los 5 puntos de MobiControl. */
+        /** Verifica el vínculo con ONE, la conexión con MobiControl y las órdenes de jornada. */
         post: {
             parameters: {
                 query?: never;
@@ -3728,6 +3728,120 @@ export interface paths {
         };
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/integrations/one": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Vínculo de la empresa con INTECHSYS ONE y lo que ONE responde con él. Nunca incluye el secreto. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["OneLinkDto"];
+                    };
+                };
+            };
+        };
+        /** Guarda la credencial solo si ONE la acepta y es de esta empresa y de WorkLog. El secreto se guarda cifrado. */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["SaveOneLinkCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["OneLinkDto"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        /** Quita la credencial de ONE: WorkLog deja de leer la consola de MobiControl. */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/integrations/one/check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Vuelve a preguntarle a ONE, sin usar la caché. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["OneLinkDto"];
+                    };
+                };
+            };
+        };
         delete?: never;
         options?: never;
         head?: never;
@@ -4110,7 +4224,7 @@ export interface components {
             /** Format: date-time */
             lastSeenAt?: string;
             /** Format: date-time */
-            enrolledAt: string;
+            enrolledAt?: string;
             /** Format: uuid */
             memberId?: string;
             memberName?: string;
@@ -4270,6 +4384,12 @@ export interface components {
             /** Format: date-time */
             lastSeenAt?: string;
             isLinkedToOne: boolean;
+            /** @description Solo al invitar: se creó la cuenta en ONE ahora. */
+            oneAccountCreated?: boolean;
+            /** @description Solo al invitar y si la cuenta se creó: contraseña temporal para entregar a la persona (una sola vez). */
+            temporaryPassword?: string;
+            /** @description Solo al invitar: aviso cuando ONE no permitió el alta y quedó solo la invitación de WorkLog. */
+            oneNotice?: string;
         };
         MemberLocationsDto: {
             /** Format: uuid */
@@ -4351,6 +4471,22 @@ export interface components {
          * @enum {unknown}
          */
         OfflinePolicy: "AllowAndNotify" | "Block";
+        /**
+         * @description Vínculo de la empresa con ONE y lo que ONE responde con él. Nunca incluye el secreto.
+         *     Problem explica, en palabras para quien administra, qué falta o qué falló.
+         */
+        OneLinkDto: {
+            linked: boolean;
+            apiKeyHint?: string;
+            /** Format: date-time */
+            linkedAt?: string;
+            reachable: boolean;
+            tenantName?: string;
+            mobiControlConfigured: boolean;
+            mobiControlHost?: string;
+            missingVariables: string[];
+            problem?: string;
+        };
         /** @description Empresa de ONE a la que llega el usuario con WorkLog asignado. Role null = acceso de plataforma. */
         OneTenantAccess: {
             /** Format: uuid */
@@ -4663,6 +4799,10 @@ export interface components {
             workGroupId?: null | string;
             /** Format: uuid */
             supervisorId?: null | string;
+        };
+        SaveOneLinkCommand: {
+            apiKey?: null | string;
+            apiSecret?: null | string;
         };
         SaveTemplateCommand: {
             name?: null | string;

@@ -55,7 +55,12 @@ export function DevicePicker({ value, onChange }: { value: string; onChange: (de
             <EmptyState className="py-6" icon={<Smartphone className="size-5" />} title="No hay dispositivos libres" description="Puedes asignarlo después, cuando MobiControl inscriba uno." />
           )}
           {devices.data?.map((device) =>
-            option(device.deviceId, `${device.model} · ${device.serial}`, `${device.groupPath} · inscrito el ${formatDate(device.enrolledAt)}`, deviceState(device)),
+            option(
+              device.deviceId,
+              `${device.model} · ${device.serial}`,
+              [device.groupPath, device.enrolledAt && `inscrito el ${formatDate(device.enrolledAt)}`].filter(Boolean).join(' · '),
+              deviceState(device),
+            ),
           )}
           {option('', 'Asignar después', 'No podrá iniciar jornada hasta tener dispositivo.', undefined, Clock)}
         </div>

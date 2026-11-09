@@ -17,6 +17,7 @@ import { useBranches, useGroups } from '@/features/organization/api'
 import { useParameters } from '@/features/parameters/api'
 import { useDeviceApps, useDeviceSettings, useDevices, useSaveDeviceSettings, useVerifyDeviceControl } from '../api'
 import { appName } from '../apps'
+import { OneLinkCard } from '../components/OneLinkCard'
 
 const WARNING_OPTIONS = [30, 15, 10, 5]
 
@@ -383,7 +384,10 @@ function DeviceControlForm({ settings }: { settings: DeviceControlSettings }) {
           </Card>
         </div>
 
-        <DevicesNow />
+        <div className="flex min-w-0 flex-col gap-6 self-start">
+          <OneLinkCard />
+          <DevicesNow />
+        </div>
       </div>
     </form>
   )
