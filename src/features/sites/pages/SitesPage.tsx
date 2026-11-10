@@ -17,6 +17,7 @@ import { keys } from '@/lib/queries'
 import type { GeoPoint, GeofenceShape, ParameterRow, WorkSite } from '@/lib/types'
 import { cn, plural } from '@/lib/utils'
 import { useSaveSite, useSetSiteActive, useSites } from '../api'
+import { MobiControlBadge, MobiControlStatus, SyncAllButton } from '../components/MobiControlSync'
 import { SiteMap } from '../components/SiteMap'
 import { centroid, MAX_RADIUS, MAX_VERTICES, MIN_RADIUS, MIN_VERTICES, round6 } from '../geometry'
 
@@ -67,9 +68,12 @@ export default function SitesPage() {
         title="Sitios y geocercas"
         description="La app valida que el usuario esté dentro de la geocerca al iniciar y finalizar cada actividad."
         actions={
-          <Button variant="primary" icon={<Plus className="size-4" aria-hidden />} onClick={() => setSelection({ kind: 'new' })}>
-            Nuevo sitio
-          </Button>
+          <>
+            <SyncAllButton />
+            <Button variant="primary" icon={<Plus className="size-4" aria-hidden />} onClick={() => setSelection({ kind: 'new' })}>
+              Nuevo sitio
+            </Button>
+          </>
         }
       />
 
@@ -121,6 +125,7 @@ export default function SitesPage() {
                         {site.shape === 'Circle' ? `Círculo de ${site.radiusMeters} m` : `Polígono de ${site.vertices.length} esquinas`} ·{' '}
                         {site.workOrdersThisWeek} OT esta semana
                       </span>
+                      <MobiControlBadge site={site} />
                     </button>
                   </li>
                 )
@@ -273,6 +278,8 @@ function SiteEditor({
           {site && <StatusChip tone={site.isActive ? 'positive' : 'neutral'}>{site.isActive ? 'Activo' : 'Inactivo'}</StatusChip>}
         </div>
 
+        {site && <MobiControlStatus site={site} />}
+
         <div className="grid gap-4 md:grid-cols-2">
           <Input label="Nombre" required placeholder="Ej.: Bodega Occidente" error={errors.name?.message} {...register('name')} />
           <Input label="Dirección" placeholder="Calle, número y ciudad" error={errors.address?.message} {...register('address')} />
@@ -383,8 +390,8 @@ function SiteEditor({
         confirmLabel="Desactivar sitio"
         description={
           <>
-            <strong>{site?.name}</strong> dejará de aparecer en la app para nuevas actividades y órdenes de trabajo. El historial
-            se conserva.
+            <strong>{site?.name}</strong> dejará de aparecer en la app para nuevas actividades y órdenes de trabajo, y su geocerca
+            se borra de MobiControl. El historial se conserva.
           </>
         }
       />

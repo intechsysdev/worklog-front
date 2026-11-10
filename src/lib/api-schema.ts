@@ -1558,7 +1558,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Activa o desactiva un sitio. */
+        /** Activa o desactiva un sitio. Desactivar lo borra de MobiControl; activar lo vuelve a crear. */
         post: {
             parameters: {
                 query?: never;
@@ -1581,6 +1581,80 @@ export interface paths {
                     };
                     content: {
                         "application/json": components["schemas"]["WorkSiteDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sites/mobicontrol-sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Lleva a MobiControl todos los sitios (prefijo «WorkLog · »): crea, renombra o borra lo que falte. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["WorkSiteDto"][];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sites/{id}/mobicontrol-sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reintenta llevar un sitio a MobiControl. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["WorkSiteDto"][];
                     };
                 };
             };
@@ -5849,6 +5923,10 @@ export interface components {
             isActive: boolean;
             /** Format: int32 */
             workOrdersThisWeek: number;
+            mobiControlName?: string;
+            /** Format: date-time */
+            mobiControlSyncedAt?: string;
+            mobiControlError?: string;
         };
     };
     responses: never;

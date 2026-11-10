@@ -20,6 +20,15 @@ export function useSaveSite() {
   })
 }
 
+/** Lleva a MobiControl un sitio (con su id) o todos (sin id). */
+export function useSyncSites() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (id?: string) => api.post<WorkSite[]>(id ? `/sites/${id}/mobicontrol-sync` : '/sites/mobicontrol-sync'),
+    onSuccess: () => client.invalidateQueries({ queryKey: keys.sites.all }),
+  })
+}
+
 export function useSetSiteActive() {
   const client = useQueryClient()
   return useMutation({
