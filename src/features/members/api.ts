@@ -1,7 +1,7 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from '@/lib/api'
 import { keys } from '@/lib/queries'
-import type { Member, MemberStatus, MemberUsage, Paged, PermissionInfo, Role, SaveMemberCommand } from '@/lib/types'
+import type { AppPassword, Member, MemberStatus, MemberUsage, Paged, PermissionInfo, Role, SaveMemberCommand } from '@/lib/types'
 
 export interface MemberListParams {
   page: number
@@ -72,6 +72,24 @@ export function useUnlinkDevice() {
   const client = useQueryClient()
   return useMutation({
     mutationFn: (id: string) => api.delete<Member | undefined>(`/members/${id}/device`),
+    onSuccess: () => client.invalidateQueries({ queryKey: keys.members.all }),
+  })
+}
+
+/** Nueva contraseña temporal de la app: cierra sus sesiones y la app pide cambiarla. Se muestra una sola vez. */
+export function useResetAppPassword() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => api.post<AppPassword>(`/members/${id}/app-password`),
+    onSuccess: () => client.invalidateQueries({ queryKey: keys.members.all }),
+  })
+}
+
+/** Crea o vincula la cuenta de ONE de un usuario de la app que también entra al panel. */
+export function useLinkOneAccount() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => api.post<Member>(`/members/${id}/one-account`),
     onSuccess: () => client.invalidateQueries({ queryKey: keys.members.all }),
   })
 }

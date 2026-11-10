@@ -216,6 +216,44 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/me/password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cambia la contraseña de la app (usuarios con contraseña de WorkLog). Cierra las demás sesiones. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ChangePasswordCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/me": {
         parameters: {
             query?: never;
@@ -796,6 +834,124 @@ export interface paths {
                     content: {
                         "application/json": components["schemas"]["SyncBatchResult"];
                     };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/mobile-auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Correo y contraseña de WorkLog. Si sirven en varias empresas responde la lista: se elige y se repite con tenantId. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["MobileLoginCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["MobileLoginResult"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/mobile-auth/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Renueva la sesión: entrega tokens nuevos y el refresh anterior deja de servir. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["RefreshSessionCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["MobileSessionDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/mobile-auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cierra la sesión del teléfono. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["RefreshSessionCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
                 };
             };
         };
@@ -2414,6 +2570,82 @@ export interface paths {
                     "application/json": components["schemas"]["ActiveRequest"];
                 };
             };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["MemberDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/members/{id}/app-password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Genera una contraseña temporal de la app (se muestra una vez), cierra sus sesiones y obliga a cambiarla. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AppPasswordDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/members/{id}/one-account": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Crea o vincula la cuenta de ONE de un usuario de la app que también usa el panel. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
             responses: {
                 /** @description OK */
                 200: {
@@ -4187,6 +4419,10 @@ export interface components {
         };
         /** @enum {unknown} */
         AdjustmentTarget: "WorkdayStart" | "WorkdayEnd" | "ActivityStart" | "ActivityEnd";
+        /** @description Contraseña temporal de la app recién generada. Se muestra una sola vez. */
+        AppPasswordDto: {
+            temporaryPassword: string;
+        };
         AssignDeviceCommand: {
             deviceId?: null | string;
         };
@@ -4326,6 +4562,10 @@ export interface components {
             timeClass: components["schemas"]["TimeClass"];
             /** Format: int32 */
             minutes: number;
+        };
+        ChangePasswordCommand: {
+            currentPassword?: null | string;
+            newPassword?: null | string;
         };
         /** @enum {unknown} */
         CheckSeverity: "Pass" | "Warning" | "Fail";
@@ -4641,12 +4881,18 @@ export interface components {
             /** Format: date-time */
             lastSeenAt?: string;
             isLinkedToOne: boolean;
+            hasAppPassword: boolean;
+            mustChangePassword: boolean;
+            /** Format: date-time */
+            appLockedUntil?: string;
             /** @description Solo al invitar: se creó la cuenta en ONE ahora. */
             oneAccountCreated?: boolean;
             /** @description Solo al invitar y si la cuenta se creó: contraseña temporal para entregar a la persona (una sola vez). */
             temporaryPassword?: string;
             /** @description Solo al invitar: aviso cuando ONE no permitió el alta y quedó solo la invitación de WorkLog. */
             oneNotice?: string;
+            /** @description Solo al invitar a un usuario de la app: su contraseña temporal de WorkLog (una sola vez). */
+            appTemporaryPassword?: string;
         };
         MemberLocationsDto: {
             /** Format: uuid */
@@ -4663,6 +4909,41 @@ export interface components {
          * @enum {unknown}
          */
         MemberUsage: "Mobile" | "WebOnly";
+        MobileLoginCommand: {
+            email?: null | string;
+            password?: null | string;
+            /** Format: uuid */
+            tenantId?: null | string;
+            device?: null | string;
+        };
+        /** @description Sesión, o la lista de empresas si el correo y la contraseña sirven en varias (se elige y se repite). */
+        MobileLoginResult: {
+            session?: components["schemas"]["MobileSessionDto"];
+            tenants?: components["schemas"]["MobileTenantOption"][];
+        };
+        /** @description Tokens de la app. ExpiresAt es el vencimiento del de acceso (una hora). */
+        MobileSessionDto: {
+            accessToken: string;
+            refreshToken: string;
+            /** Format: date-time */
+            expiresAt: string;
+            mustChangePassword: boolean;
+            user: components["schemas"]["MobileUserDto"];
+            /** Format: uuid */
+            tenantId: string;
+            tenantName: string;
+        };
+        MobileTenantOption: {
+            /** Format: uuid */
+            tenantId: string;
+            name: string;
+        };
+        MobileUserDto: {
+            /** Format: uuid */
+            memberId: string;
+            fullName: string;
+            email: string;
+        };
         /** @description Perfil de quien hace la petición: lo que el panel y la app necesitan al arrancar. */
         MyProfileDto: {
             /** Format: uuid */
@@ -4930,6 +5211,9 @@ export interface components {
             /** Format: date-time */
             acceptedAt?: string;
         };
+        RefreshSessionCommand: {
+            refreshToken?: null | string;
+        };
         RegisterAbsenceCommand: {
             /** Format: uuid */
             memberId: string;
@@ -5056,6 +5340,7 @@ export interface components {
             workGroupId?: null | string;
             /** Format: uuid */
             supervisorId?: null | string;
+            usesPanel?: null | boolean;
         };
         SaveOneLinkCommand: {
             apiKey?: null | string;

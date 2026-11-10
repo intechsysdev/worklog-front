@@ -17,6 +17,7 @@ import { formatDate, formatRelative } from '@/lib/utils'
 import { useBranches, useGroups } from '@/features/organization/api'
 import { useMemberOptions, useRoles, useSaveMember, useSetMemberActive, useUnlinkDevice } from '../api'
 import { rolesForUsage } from '../roles'
+import { AccessSection } from './AccessSection'
 
 const schema = z.object({
   usage: z.enum(['Mobile', 'WebOnly']),
@@ -229,10 +230,11 @@ export function MemberPanel({ member, open, onClose }: { member: Member | null; 
                     : <span className="text-caution">Pendiente</span>,
                 },
                 { label: 'Última actividad', value: member.lastSeenAt ? formatRelative(member.lastSeenAt) : 'Nunca' },
-                { label: 'Cuenta de ONE', value: member.isLinkedToOne ? 'Vinculada' : 'Aún no ingresa' },
               ]}
             />
           </div>
+
+          <AccessSection member={member} disabled={busy} />
 
           <p className="text-[13px] leading-relaxed text-ink-muted">
             Los dispositivos, su grupo y su estado vienen de SOTI MobiControl. Desvincular cierra la sesión de WorkLog en ese

@@ -107,6 +107,7 @@ export type ImportReport = S['ImportReport']
 // ── Usuarios y roles ────────────────────────────────────────────────────────
 
 export type Member = S['MemberDto']
+export type AppPassword = S['AppPasswordDto']
 export type SaveMemberCommand = S['SaveMemberCommand']
 export type RoleKind = S['RoleKind']
 export type Role = S['RoleDto']

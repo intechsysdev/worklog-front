@@ -18,6 +18,7 @@ import { useAssignDevice } from '@/features/devices/api'
 import { DevicePicker } from './DevicePicker'
 import { useMemberOptions, useRoles, useSaveMember } from '../api'
 import { rolesForUsage } from '../roles'
+import { SecretBox } from './SecretBox'
 
 const schema = z.object({
   fullName: z.string().trim().min(3, 'Escribe el nombre completo.').max(120, 'Máximo 120 caracteres.'),
@@ -27,13 +28,14 @@ const schema = z.object({
   branchId: z.string(),
   workGroupId: z.string(),
   supervisorId: z.string(),
+  usesPanel: z.boolean(),
 })
 
 type FormValues = z.infer<typeof schema>
 const stepOneFields = ['fullName', 'email', 'usage'] as const
 const allFields = [...stepOneFields, 'roleId', 'branchId', 'workGroupId', 'supervisorId'] as const
 
-const defaults: FormValues = { fullName: '', email: '', usage: 'Mobile', roleId: '', branchId: '', workGroupId: '', supervisorId: '' }
+const defaults: FormValues = { fullName: '', email: '', usage: 'Mobile', roleId: '', branchId: '', workGroupId: '', supervisorId: '', usesPanel: false }
 
 const steps = ['Datos', 'Rol y sede', 'Dispositivo']
 
@@ -102,6 +104,7 @@ export function InviteDialog({ open, onClose, onViewUsers }: { open: boolean; on
           branchId: values.branchId || null,
           workGroupId: values.workGroupId || null,
           supervisorId: values.supervisorId || null,
+          usesPanel: values.usage === 'Mobile' ? values.usesPanel : null,
         },
       })
       // El dispositivo se vincula después de crear a la persona; si falla, la invitación sigue en pie.
@@ -122,11 +125,12 @@ export function InviteDialog({ open, onClose, onViewUsers }: { open: boolean; on
   }
 
   if (invited) {
-    // Campos que la API solo envía en la respuesta de invitar (alta de la cuenta en ONE).
+    // Campos que la API solo envía en la respuesta de invitar: contraseña de la app y alta de la cuenta en ONE.
     const oneResult = invited as typeof invited & {
       oneAccountCreated?: boolean | null
       temporaryPassword?: string | null
       oneNotice?: string | null
+      appTemporaryPassword?: string | null
     }
     return (
       <Modal
@@ -158,29 +162,27 @@ export function InviteDialog({ open, onClose, onViewUsers }: { open: boolean; on
             </span>
             <p className="pt-1.5 text-sm leading-relaxed text-ink-soft">
               <strong className="text-ink">{invited.fullName}</strong> quedó como <strong>Invitado</strong>. Pasa a Activo cuando
-              ingrese con su cuenta de INTECHSYS ONE ({invited.email}).
+              {invited.usage === 'Mobile'
+                ? ` entre a la app con su correo (${invited.email}) y la contraseña temporal.`
+                : ` ingrese al panel con su cuenta de INTECHSYS ONE (${invited.email}).`}
               {invited.usage === 'Mobile' && !deviceWarning && (deviceId ? ' El dispositivo quedó vinculado.' : ' No podrá iniciar jornada hasta tener dispositivo.')}
             </p>
           </div>
           {deviceWarning && <InlineMessage tone="warning">{deviceWarning}</InlineMessage>}
           {oneResult.oneNotice && <InlineMessage tone="warning">{oneResult.oneNotice}</InlineMessage>}
+          {oneResult.appTemporaryPassword && (
+            <SecretBox
+              title="Contraseña de la app"
+              description="Entrégale su correo y esta contraseña temporal por un canal seguro. Solo se muestra ahora; la app le pedirá cambiarla al entrar."
+              value={oneResult.appTemporaryPassword}
+            />
+          )}
           {oneResult.temporaryPassword && (
-            <div className="rounded-[12px] border border-line p-4">
-              <h3 className="section-label mb-1">Cuenta creada en INTECHSYS ONE</h3>
-              <p className="mb-3 text-sm text-ink-soft">
-                Entrégale esta contraseña temporal por un canal seguro. Solo se muestra ahora; ONE le pedirá cambiarla en el primer
-                ingreso.
-              </p>
-              <div className="flex items-center gap-2">
-                <code className="tabular flex-1 rounded-[10px] bg-inset px-3 py-2 font-mono text-sm text-ink">{oneResult.temporaryPassword}</code>
-                <Button
-                  variant="secondary"
-                  onClick={() => void navigator.clipboard?.writeText(oneResult.temporaryPassword ?? '')}
-                >
-                  Copiar
-                </Button>
-              </div>
-            </div>
+            <SecretBox
+              title={invited.usage === 'Mobile' ? 'Cuenta del panel en INTECHSYS ONE' : 'Cuenta creada en INTECHSYS ONE'}
+              description="Contraseña temporal para entrar al panel web. Solo se muestra ahora; ONE le pedirá cambiarla en el primer ingreso."
+              value={oneResult.temporaryPassword}
+            />
           )}
           {oneResult.oneAccountCreated === false && (
             <InlineMessage tone="info">Ya tenía cuenta en INTECHSYS ONE: quedó vinculada a la empresa con su contraseña de siempre.</InlineMessage>
@@ -191,8 +193,8 @@ export function InviteDialog({ open, onClose, onViewUsers }: { open: boolean; on
               {invited.usage === 'Mobile' ? (
                 <>
                   <li>SOTI MobiControl instala WorkLog en su dispositivo.</li>
-                  <li>La app se identifica con el id del dispositivo.</li>
-                  <li>La persona ingresa y acepta la política de datos.</li>
+                  <li>Entra a la app con su correo y la contraseña temporal, y crea la suya.</li>
+                  <li>Acepta la política de datos.</li>
                 </>
               ) : (
                 <li>No necesita dispositivo: entra al panel con su cuenta de INTECHSYS ONE.</li>
@@ -315,6 +317,17 @@ export function InviteDialog({ open, onClose, onViewUsers }: { open: boolean; on
                 })}
               </div>
             </FieldShell>
+            {usage === 'Mobile' && (
+              <label className="flex items-start gap-2.5 text-sm text-ink-soft">
+                <input type="checkbox" className="mt-0.5 size-4 accent-[var(--color-accent-solid)]" {...register('usesPanel')} />
+                <span>
+                  <span className="font-semibold text-ink">También entra al panel web</span>
+                  <span className="block text-[13px] text-ink-muted">
+                    Para supervisores de campo: se crea además su cuenta de INTECHSYS ONE. La app siempre usa la contraseña de WorkLog.
+                  </span>
+                </span>
+              </label>
+            )}
           </>
         ) : step === 1 ? (
           <>
