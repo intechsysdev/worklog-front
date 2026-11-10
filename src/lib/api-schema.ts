@@ -845,6 +845,160 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/activity-log": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Jornadas de las personas en un rango (máx. 31 días), con sus totales. */
+        get: {
+            parameters: {
+                query: {
+                    from: string;
+                    to: string;
+                    memberId?: string;
+                    branchId?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ActivityLogDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/activity-log/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Exporta el registro a Excel: una fila por actividad. */
+        get: {
+            parameters: {
+                query: {
+                    from: string;
+                    to: string;
+                    memberId?: string;
+                    branchId?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/activity-log/workdays/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Detalle de una jornada: barra del día, actividades, pausas, resultados y evidencias. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["WorkdayDetailDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/activity-log/evidence/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Foto o firma de una actividad. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/branches": {
         parameters: {
             query?: never;
@@ -3905,12 +4059,100 @@ export interface components {
         ActiveRequest: {
             active: boolean;
         };
+        /** @description Una actividad con todo lo que registró el técnico al iniciarla y al cerrarla. */
+        ActivityDetailDto: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            categoryName: string;
+            timeClass: components["schemas"]["TimeClass"];
+            color: string;
+            workOrderNumber?: string;
+            workSiteName?: string;
+            /** Format: date-time */
+            startedAt: string;
+            /** Format: date-time */
+            endedAt?: string;
+            running: boolean;
+            /** Format: int32 */
+            minutes: number;
+            /** Format: int32 */
+            pausedMinutes: number;
+            pauses: components["schemas"]["ActivityPauseDto"][];
+            outcome?: components["schemas"]["ActivityOutcome"];
+            outcomeLabel?: string;
+            observation?: string;
+            autoFinished: boolean;
+            startGeofence: components["schemas"]["GeofenceStatus"];
+            endGeofence: components["schemas"]["GeofenceStatus"];
+            /** Format: int32 */
+            photoCount: number;
+            hasSignature: boolean;
+        };
         ActivityEventCommand: {
             /** Format: uuid */
             clientEventId?: null | string;
             /** Format: date-time */
             occurredAt?: null | string;
             location?: null | components["schemas"]["LocationInput"];
+        };
+        ActivityLogDto: {
+            /** Format: date */
+            from: string;
+            /** Format: date */
+            to: string;
+            rows: components["schemas"]["ActivityLogRowDto"][];
+            totals: components["schemas"]["ActivityLogTotalsDto"];
+        };
+        /** @description Una jornada en el registro: quién, cuándo, cuánto y qué dejó (actividades y evidencias). */
+        ActivityLogRowDto: {
+            /** Format: uuid */
+            workdayId: string;
+            /** Format: uuid */
+            memberId: string;
+            memberName: string;
+            /** Format: uuid */
+            branchId?: string;
+            branchName?: string;
+            /** Format: date */
+            date: string;
+            status: components["schemas"]["WorkdayStatus"];
+            /** Format: date-time */
+            startedAt: string;
+            /** Format: date-time */
+            endedAt?: string;
+            closeKind?: components["schemas"]["CloseKind"];
+            wasAdjusted: boolean;
+            /** Format: int32 */
+            lateMinutes: number;
+            startGeofence: components["schemas"]["GeofenceStatus"];
+            endGeofence: components["schemas"]["GeofenceStatus"];
+            /** Format: int32 */
+            activityCount: number;
+            /** Format: int32 */
+            workedMinutes: number;
+            /** Format: int32 */
+            productiveMinutes: number;
+            /** Format: int32 */
+            withoutActivityMinutes: number;
+            /** Format: int32 */
+            pausedMinutes: number;
+            /** Format: int32 */
+            photoCount: number;
+            /** Format: int32 */
+            signatureCount: number;
+        };
+        ActivityLogTotalsDto: {
+            /** Format: int32 */
+            workdays: number;
+            /** Format: int32 */
+            people: number;
+            /** Format: int32 */
+            activities: number;
+            /** Format: int32 */
+            workedMinutes: number;
+            /** Format: int32 */
+            productiveMinutes: number;
         };
         ActivityOptionsDto: {
             assigned: components["schemas"]["AssignedOptionDto"][];
@@ -3919,6 +4161,12 @@ export interface components {
         };
         /** @enum {unknown} */
         ActivityOutcome: "Completed" | "Incomplete" | "Rescheduled";
+        ActivityPauseDto: {
+            /** Format: date-time */
+            startedAt: string;
+            /** Format: date-time */
+            endedAt?: string;
+        };
         /** @enum {unknown} */
         ActivityStatus: "Running" | "Paused" | "Finished";
         ActivityTypeDto: {
@@ -4264,6 +4512,15 @@ export interface components {
             /** Format: date-time */
             capturedAt?: string;
             file?: components["schemas"]["IFormFile"];
+        };
+        EvidenceItemDto: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            activityRecordId: string;
+            kind: components["schemas"]["EvidenceKind"];
+            /** Format: date-time */
+            capturedAt: string;
         };
         /** @enum {unknown} */
         EvidenceKind: "Photo" | "Signature";
@@ -5216,6 +5473,18 @@ export interface components {
         WorkdayCommandResult: {
             outcome: components["schemas"]["CommandOutcome"];
             today: components["schemas"]["TodayDto"];
+        };
+        WorkdayDetailDto: {
+            workday: components["schemas"]["ActivityLogRowDto"];
+            /** Format: time */
+            scheduledStart?: string;
+            /** Format: time */
+            scheduledEnd?: string;
+            startSiteName?: string;
+            note?: string;
+            segments: components["schemas"]["SegmentDto"][];
+            activities: components["schemas"]["ActivityDetailDto"][];
+            evidence: components["schemas"]["EvidenceItemDto"][];
         };
         WorkdayDto: {
             /** Format: uuid */

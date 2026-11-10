@@ -54,6 +54,13 @@ export type TeamToday = S['TeamTodayDto']
 export type MemberLocations = S['MemberLocationsDto']
 export type LocationPoint = S['LocationPointDto']
 export type LocationEvent = S['LocationEvent']
+export type ActivityLog = S['ActivityLogDto']
+export type ActivityLogRow = S['ActivityLogRowDto']
+export type WorkdayDetail = S['WorkdayDetailDto']
+export type ActivityDetail = S['ActivityDetailDto']
+export type EvidenceItem = S['EvidenceItemDto']
+export type Segment = S['SegmentDto']
+export type WorkdayStatus = S['WorkdayStatus']
 
 // ── Organización y sitios ───────────────────────────────────────────────────
 

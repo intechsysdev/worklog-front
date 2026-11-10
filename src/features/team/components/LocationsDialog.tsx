@@ -120,8 +120,17 @@ function PointsMap({ points }: { points: LocationPoint[] }) {
 }
 
 /** "Ver ubicación" de Equipo hoy. Cada consulta queda en la auditoría (la registra el API). */
-export default function LocationsDialog({ member, onClose }: { member: { id: string; name: string } | null; onClose: () => void }) {
-  const [date, setDate] = useState(todayDateOnly())
+export default function LocationsDialog({
+  member,
+  onClose,
+  initialDate,
+}: {
+  member: { id: string; name: string } | null
+  onClose: () => void
+  /** Día con que abre (por defecto hoy). */
+  initialDate?: string
+}) {
+  const [date, setDate] = useState(initialDate ?? todayDateOnly())
   const locations = useMemberLocations(member?.id ?? null, date)
   const points = useMemo(
     () => [...(locations.data?.points ?? [])].sort((a, b) => a.capturedAt.localeCompare(b.capturedAt)),

@@ -13,6 +13,7 @@ import { useAuth } from '@/providers/AuthProvider'
 
 // Cada módulo se descarga al entrar en él; el de sitios arrastra MapLibre (~1 MB).
 const TeamTodayPage = lazy(() => import('@/features/team/pages/TeamTodayPage'))
+const ActivityLogPage = lazy(() => import('@/features/activity-log/pages/ActivityLogPage'))
 const OrganizationPage = lazy(() => import('@/features/organization/pages/OrganizationPage'))
 const SitesPage = lazy(() => import('@/features/sites/pages/SitesPage'))
 const TemplatesPage = lazy(() => import('@/features/schedules/pages/TemplatesPage'))
@@ -98,6 +99,7 @@ export function App() {
         <Route element={<AppShell />}>
           <Route index element={<Home />} />
           <Route path="equipo" element={<Guard permission="view_team"><TeamTodayPage /></Guard>} />
+          <Route path="registro" element={<Guard permission="view_team"><ActivityLogPage /></Guard>} />
           <Route path="ordenes" element={<Guard permission={['manage_settings', 'view_team']}><WorkOrdersPage /></Guard>} />
           <Route path="organizacion" element={<Guard permission="manage_settings"><OrganizationPage /></Guard>} />
           <Route path="plantillas" element={<Guard permission="manage_schedules"><TemplatesPage /></Guard>} />

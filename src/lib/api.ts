@@ -240,8 +240,16 @@ async function download(path: string, options: RequestOptions & { fileName?: str
   window.setTimeout(() => URL.revokeObjectURL(url), 1000)
 }
 
+/** Archivo protegido como blob (para mostrar una foto con el token en la cabecera, no en la URL). */
+async function blob(path: string, options: RequestOptions = {}) {
+  const response = await authorized('GET', path, options)
+  if (!response.ok) throw await parseError(response)
+  return response.blob()
+}
+
 export const api = {
   download,
+  blob,
   get: <T>(path: string, options?: RequestOptions) => request<T>('GET', path, options),
   post: <T>(path: string, body?: unknown, options?: RequestOptions) =>
     request<T>('POST', path, { ...options, body }),

@@ -6,6 +6,7 @@ import {
   Clock,
   Building2,
   FileClock,
+  History,
   ListChecks,
   Lock,
   MapPin,
@@ -36,6 +37,7 @@ export const navigation: NavGroup[] = [
     label: 'Operación',
     items: [
       { to: '/equipo', label: 'Equipo hoy', icon: Users, permission: 'view_team' },
+      { to: '/registro', label: 'Registro de actividades', icon: History, permission: 'view_team' },
       { to: '/aprobaciones', label: 'Aprobaciones', icon: CheckCheck, permission: 'approve_requests' },
       { to: '/horas', label: 'Horas del equipo', icon: BarChart3, permission: 'view_team' },
       { to: '/cierre', label: 'Cierre de periodo', icon: Lock, permission: ['close_periods', 'export_payroll'] },
