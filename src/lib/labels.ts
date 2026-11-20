@@ -99,6 +99,7 @@ export const requestTypeLabel: Record<RequestType, string> = {
   RecordAdjustment: 'Ajuste',
   Overtime: 'Horas extra',
   ShiftChange: 'Cambio de turno',
+  Resume: 'Reinicio de actividades',
 }
 
 export const requestStatusMeta: Record<RequestStatus, Meta> = {

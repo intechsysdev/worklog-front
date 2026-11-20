@@ -23,6 +23,7 @@ const tabs: { id: TypeTab; label: string }[] = [
   { id: 'RecordAdjustment', label: 'Ajustes' },
   { id: 'Overtime', label: 'Horas extra' },
   { id: 'ShiftChange', label: 'Cambios de turno' },
+  { id: 'Resume', label: 'Reinicios' },
 ]
 
 const filterClass =
@@ -59,6 +60,9 @@ function detailFields(request: ApprovalRequest) {
       label: 'Autorización Mintrabajo',
       value: request.authorizationReference ?? <span className="text-caution">Sin número de resolución</span>,
     })
+  } else if (request.type === 'Resume') {
+    // Volver a trabajar el mismo día después de cerrar: al aprobar, la persona reanuda desde la app.
+    fields.push({ label: 'Jornada', value: `Reanudar la jornada cerrada · ${weekdayDate(request.date)}` })
   } else {
     fields.push({
       label: 'Propuesto',
@@ -105,7 +109,7 @@ export default function ApprovalsPage() {
         title="Aprobaciones"
         description={
           <>
-            Ajustes, horas extra y cambios de turno de tu equipo
+            Ajustes, horas extra, cambios de turno y reinicios de actividades de tu equipo
             {pending.data != null && <> · {plural(pending.data, 'pendiente')}</>}
           </>
         }

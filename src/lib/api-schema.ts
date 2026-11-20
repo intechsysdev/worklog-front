@@ -3184,6 +3184,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/me/requests/resume": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Pide reanudar la jornada de hoy después de haberla cerrado (reinicio de actividades). */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["SubmitResumeCommand"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RequestDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/me/requests/{id}/cancel": {
         parameters: {
             query?: never;
@@ -5345,7 +5385,7 @@ export interface components {
         /** @enum {unknown} */
         RequestStatus: "Pending" | "Approved" | "Rejected" | "Cancelled";
         /** @enum {unknown} */
-        RequestType: "RecordAdjustment" | "Overtime" | "ShiftChange";
+        RequestType: "RecordAdjustment" | "Overtime" | "ShiftChange" | "Resume";
         RequirementsDto: {
             photo: boolean;
             signature: boolean;
@@ -5354,6 +5394,21 @@ export interface components {
         ResolveRequestCommand: {
             comment?: null | string;
         };
+        /**
+         * @description Solo con la jornada de hoy cerrada. CanResumeNow dice si el teléfono puede
+         *     reanudarla ya; si está aprobada pero no se puede, BlockedReason dice por qué.
+         */
+        ResumeDto: {
+            state: components["schemas"]["ResumeState"];
+            canResumeNow: boolean;
+            blockedReason?: string;
+            resolverComment?: string;
+        };
+        /**
+         * @description En qué va el reinicio de actividades de la jornada cerrada de hoy.
+         * @enum {unknown}
+         */
+        ResumeState: "None" | "Pending" | "Approved" | "Rejected";
         RoleDto: {
             /** Format: uuid */
             id: string;
@@ -5582,6 +5637,9 @@ export interface components {
             authorizationReference?: null | string;
             reason?: null | string;
         };
+        SubmitResumeCommand: {
+            reason?: null | string;
+        };
         SubmitShiftChangeCommand: {
             days?: null | components["schemas"]["ShiftChangeDayDto"][];
             reason?: null | string;
@@ -5802,6 +5860,7 @@ export interface components {
             overtimeUntil?: string;
             /** Format: date-time */
             autoCloseAt?: string;
+            resume?: components["schemas"]["ResumeDto"];
         };
         VerificationCheck: {
             code: string;
